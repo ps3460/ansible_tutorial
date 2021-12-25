@@ -23,26 +23,11 @@
   become: true
   tasks:
 
-  - name: create philbot user
-    tags: always
-    user:
-      name: philbot
-      groups: root
-
   - name: add ssh key for philbot
     tags: always
     authorized_key:
       user: philbot
       key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOKNfldT/qKQzgZnE94pU0Gh0r+IUFerszq0uS2vv81L philbot"
-
-  - name : add sudoers file for philbot
-    tags: always
-    copy:
-      src: sudoer_philbot
-      dest: /etc/sudoers.d/philbot
-      owner: root
-      group: root
-      mode: 0440
 
 - hosts: web_servers
   become: true
