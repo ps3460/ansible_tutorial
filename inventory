@@ -1,1 +1,13 @@
+[web_servers]
 176.58.99.98
+212.71.235.106
+
+[db_servers]
+139.162.203.36
+
+[file_server]
+176.58.99.98
+
+
+[all:vars]
+ansible_user=root

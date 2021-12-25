@@ -2,6 +2,22 @@
 
 - hosts: all
   become: true
+  pre_tasks:
+
+  - name : install updates (CentOS)
+    dnf:
+      update_only: yes
+      update_cache: yes
+    when: ansible_distribution in ["CentOS"]
+
+  - name : install updates (Ubuntu)
+    apt:
+      upgrade: dist
+      update_cache: yes
+    when: ansible_distribution in ["Ubuntu"]  
+
+- hosts: web_servers
+  become: true
   tasks:
 
   - name: install apache2 and php package for Debian
@@ -10,7 +26,6 @@
         - apache2
         - libapache2-mod-php
       state: latest
-      update_cache: yes
     when: ansible_distribution in ["Ubuntu", "Debian"]
 
   - name: install httpd and php package for CentOS
@@ -19,6 +34,5 @@
         - httpd
         - php
       state: latest
-      update_cache: yes
     when: ansible_distribution in ["CentOS"]
 
