@@ -1,37 +1,10 @@
-- name: install apache2 and php package for Debian
-  tags: apache,apache2,ubuntu
-  apt:
+- name: install apache2 and php packages
+  tags: apache,httpd,php
+  package:
     name:
-      - apache2
-      - libapache2-mod-php
+      - "{{ apache_package_name }}"
+      - "{{ php_package_name }}"
     state: latest
-  when: ansible_distribution in ["Ubuntu", "Debian"]
-
-- name: install httpd and php package for CentOS
-  tags: apache,httpd,centos
-  dnf:
-    name: 
-      - httpd
-      - php
-    state: latest
-  when: ansible_distribution in ["CentOS"]
-
-- name: start httpd (CentOS)
-  tags: apache,centos,httpd
-  service:
-    name: httpd
-    state: started
-    enabled: yes
-  when: ansible_distribution in ["CentOS"]
-
-- name: change e-mail address for admin
-  tags: apache,centos,httpd
-  lineinfile:
-    path: /etc/httpd/conf/httpd.conf
-    regexp: '^ServerAdmin'
-    line: ServerAdmin somebody@email.example.com
-  when: ansible_distribution in ["CentOS"]
-  register: httpd
 
 - name: FirewallD rules
   firewalld:
@@ -44,12 +17,21 @@
     - https
   when: ansible_distribution in ["CentOS"]
 
-- name: restart httpd (CentOS)
+- name: start httpd (CentOS)
   tags: apache,centos,httpd
   service:
-    name: httpd
-    state: restarted
-  when: httpd.changed
+    name: "{{ apache_service }}"
+    state: started
+    enabled: yes
+
+- name: change e-mail address for admin
+  tags: apache,centos,httpd
+  lineinfile:
+    path: /etc/httpd/conf/httpd.conf
+    regexp: '^ServerAdmin'
+    line: ServerAdmin somebody1@email.example.com
+  when: ansible_distribution in ["CentOS"]
+  notify: restart_apache
 
 - name: copy default html to site
   tags: apache,apache2,httpd
