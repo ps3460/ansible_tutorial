@@ -1,0 +1,5 @@
+- name: add ssh key for philbot
+  tags: always
+  authorized_key:
+    user: philbot
+    key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOKNfldT/qKQzgZnE94pU0Gh0r+IUFerszq0uS2vv81L philbot"
